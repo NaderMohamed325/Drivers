@@ -8,6 +8,7 @@
 #include "mcal_external_interrupt.h"
 
 // Static function declarations
+typedef void (*Interrupt_Handler)(void);
 static Std_ReturnType Interrupt_INTx_Enable(const interrupt_INTx_t *obj);
 static Std_ReturnType Interrupt_INTx_Disable(const interrupt_INTx_t *obj);
 static Std_ReturnType Interrupt_INTx_Priority_Init(const interrupt_INTx_t *obj);
@@ -15,24 +16,24 @@ static Std_ReturnType Interrupt_INTx_Edge_Init(const interrupt_INTx_t *obj);
 static Std_ReturnType Interrupt_INTx_Pin_Init(const interrupt_INTx_t *obj);
 static Std_ReturnType Interrupt_INTx_Clear_Flag(const interrupt_INTx_t *obj);
 
-static Std_ReturnType INT0_Set_Interrupt_Handler(void(*Interrupt_Handler)(void));
-static Std_ReturnType INT1_Set_Interrupt_Handler(void(*Interrupt_Handler)(void));
-static Std_ReturnType INT2_Set_Interrupt_Handler(void(*Interrupt_Handler)(void));
+static Std_ReturnType INT0_Set_Interrupt_Handler(Interrupt_Handler);
+static Std_ReturnType INT1_Set_Interrupt_Handler(Interrupt_Handler);
+static Std_ReturnType INT2_Set_Interrupt_Handler(Interrupt_Handler);
 static Std_ReturnType Interrupt_Set_Interrupt_Handler(const interrupt_INTx_t *obj);
 
 // Static variables for interrupt handlers
-static void(*INT0_Interrupt_Handler)(void) = NULL;
-static void(*INT1_Interrupt_Handler)(void) = NULL;
-static void(*INT2_Interrupt_Handler)(void) = NULL;
+static Interrupt_Handler INT0_Interrupt_Handler = NULL;
+static Interrupt_Handler INT1_Interrupt_Handler = NULL;
+static Interrupt_Handler INT2_Interrupt_Handler = NULL;
 
-static void(*RB4_Interrupt_Handler_High)(void) = NULL;
-static void(*RB4_Interrupt_Handler_Low)(void) = NULL;
-static void(*RB5_Interrupt_Handler_High)(void) = NULL;
-static void(*RB5_Interrupt_Handler_Low)(void) = NULL;
-static void(*RB6_Interrupt_Handler_High)(void) = NULL;
-static void(*RB6_Interrupt_Handler_Low)(void) = NULL;
-static void(*RB7_Interrupt_Handler_High)(void) = NULL;
-static void(*RB7_Interrupt_Handler_Low)(void) = NULL;
+static Interrupt_Handler RB4_Interrupt_Handler_High = NULL;
+static Interrupt_Handler RB4_Interrupt_Handler_Low = NULL;
+static Interrupt_Handler RB5_Interrupt_Handler_High = NULL;
+static Interrupt_Handler RB5_Interrupt_Handler_Low = NULL;
+static Interrupt_Handler RB6_Interrupt_Handler_High = NULL;
+static Interrupt_Handler RB6_Interrupt_Handler_Low = NULL;
+static Interrupt_Handler RB7_Interrupt_Handler_High = NULL;
+static Interrupt_Handler RB7_Interrupt_Handler_Low = NULL;
 
 /**
  * @brief Initializes external interrupt INTx.
@@ -46,20 +47,20 @@ Std_ReturnType Interrupt_INTx_Init(const interrupt_INTx_t *obj) {
         ret = E_NOT_OK;
     } else {
         // Disable the interrupt, set edge, and clear flag
-        ret = Interrupt_INTx_Disable(obj);
-        ret = Interrupt_INTx_Edge_Init(obj);
-        
+        ret |= Interrupt_INTx_Disable(obj);
+        ret |= Interrupt_INTx_Edge_Init(obj);
+
         // Initialize priority if enabled
 #if INTERRUPT_PRIORITY_LEVELS_ENABLE==INTERRUPT_FEATURE_ENABLE
-        ret = Interrupt_INTx_Priority_Init(obj);
+        ret | = Interrupt_INTx_Priority_Init(obj);
 #endif
-        
+
         // Initialize pin and set interrupt handler
-        ret = Interrupt_INTx_Pin_Init(obj);
-        ret = Interrupt_Set_Interrupt_Handler(obj);
-        
+        ret |= Interrupt_INTx_Pin_Init(obj);
+        ret |= Interrupt_Set_Interrupt_Handler(obj);
+
         // Enable the interrupt
-        ret = Interrupt_INTx_Enable(obj);
+        ret |= Interrupt_INTx_Enable(obj);
     }
     return ret;
 }
@@ -95,7 +96,7 @@ Std_ReturnType Interrupt_RBx_Init(const interrupt_RBx_t *obj) {
         // Disable, clear flag, enable priority if enabled
         EXT_RBx_Interrupt_Disable();
         EXT_RBx_Interrupt_Flag_Clear();
-        
+
 #if INTERRUPT_PRIORITY_LEVELS_ENABLE==INTERRUPT_FEATURE_ENABLE 
         INTERRUPT_Pirority_Level_Enable();
         if (INTERRUPT_LOW_PRIORITY == obj->Priority) {
@@ -145,21 +146,7 @@ Std_ReturnType Interrupt_RBx_Init(const interrupt_RBx_t *obj) {
     return ret;
 }
 
-/**
- * @brief Initializes external interrupt RBxx.
- *
- * @param obj: Pointer to the interrupt_RBx_t object.
- * @return Std_ReturnType: Status of the initialization.
- */
-Std_ReturnType Interrupt_RBxx_Init(const interrupt_RBx_t *obj) {
-    Std_ReturnType ret = E_OK;
-    if (NULL == obj) {
-        ret = E_NOT_OK;
-    } else {
-        // Initialization code for external interrupt RBxx
-    }
-    return ret;
-}
+ 
 
 // Implementation of static functions
 
@@ -177,7 +164,6 @@ static Std_ReturnType Interrupt_INTx_Enable(const interrupt_INTx_t *obj) {
         switch (obj->Source) {
             case (INTERRUPT_EXTERNAL_INT0):
 #if INTERRUPT_PRIORITY_ENABLE==INTERRUPT_FEATURE_ENABLE
-                
                 INTERRUPT_Global_Interrupt_High_Enable();
 #else
                 INTERRUPT_Global_Interrupt_Enable();

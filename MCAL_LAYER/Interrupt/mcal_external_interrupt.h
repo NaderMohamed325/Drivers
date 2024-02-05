@@ -93,7 +93,7 @@ typedef struct {
     interrupt_priority_cfg Priority;
     pin_config_t mcu_pin;
 
-} interrupt_RBx_t;
+}  interrupt_RBx_t;
 
 /*------------ FUNCTIONS DECLARATION ----------*/
 /**
@@ -117,11 +117,5 @@ Std_ReturnType Interrupt_INTx_DeInit(const interrupt_INTx_t *obj);
  */
 Std_ReturnType Interrupt_RBx_Init(const interrupt_RBx_t *obj);
 
-/**
- * @brief Initializes external interrupt RBxx.
- * @param obj: Pointer to the interrupt_RBx_t object.
- * @return Std_ReturnType: Status of the initialization.
- */
-Std_ReturnType Interrupt_RBxx_Init(const interrupt_RBx_t *obj);
 
 #endif /* MCAL_EXTERNAL_INTERRUPT_H */

@@ -1,5 +1,5 @@
 #include "app.h"
-#include "MCAL_LAYER/Interrupt/mcal_interrupt_manager.h"
+
 
 // Global variables
 Std_ReturnType ret = E_OK;
@@ -7,6 +7,11 @@ Std_ReturnType ret = E_OK;
 
 // Function prototypes
 void Application_initialize(void);
+void reset() {
+    // Perform a software reset by jumping to the reset vector
+    asm("goto 0x00");
+}
+
 Led_t led0 = {
     .led_status = LED_OFF,
     .port_index = PORTC_INDEX,
