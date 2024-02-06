@@ -5,10 +5,10 @@ Linker command line:
 -W-3 --edf=D:\IDE MCU\pic\dat\20230818022343_en.msgs -cn \
   -h+dist/default/debug\Interfacing.X.debug.sym \
   --cmf=dist/default/debug\Interfacing.X.debug.cmf -z -Q18F4620 \
-  -oC:\Users\xcite\AppData\Local\Temp\xcAsce0.\driver_tmp_3.o \
+  -oC:\Users\xcite\AppData\Local\Temp\xcAsbu4.\driver_tmp_3.o \
   --defsym=__MPLAB_BUILD=1 --fixupoverflow=error \
   -Mdist/default/debug/Interfacing.X.debug.map \
-  --md=C:\Users\xcite\AppData\Local\Temp\xcAsce0.\driver_tmp_0.dat -E1 \
+  --md=C:\Users\xcite\AppData\Local\Temp\xcAsbu4.\driver_tmp_0.dat -E1 \
   -ver=XC8 Compiler --acfsm=1493 -ACODE=00h-0FFFFh -ACONST=00h-0FFFFh \
   -ASMALLCONST=01000h-010FFhx240 -AMEDIUMCONST=01000h-0FFFFh \
   -ACOMRAM=01h-07Fh -AABS1=00h-0F7Fh -ABIGRAM=01h-0F7Fh \
@@ -27,7 +27,7 @@ Linker command line:
   -pfarbss=FARRAM,fardata=FARRAM,nvFARRAM=FARRAM \
   -pintsave_regs=BIGRAM,bigbss=BIGRAM,bigdata=BIGRAM -pbss=RAM \
   -pidata=CODE,irdata=CODE,ibigdata=CODE,ifardata=CODE -prparam=COMRAM \
-  C:\Users\xcite\AppData\Local\Temp\xcAsce0.\driver_tmp_9.o \
+  C:\Users\xcite\AppData\Local\Temp\xcAsbu4.\driver_tmp_9.o \
   dist/default/debug\Interfacing.X.debug.o 
 
 Object code version is 3.11
@@ -37,7 +37,7 @@ Machine type is 18F4620
 
 
                 Name                               Link     Load   Length Selector   Space Scale
-C:\Users\xcite\AppData\Local\Temp\xcAsce0.\driver_tmp_9.o
+C:\Users\xcite\AppData\Local\Temp\xcAsbu4.\driver_tmp_9.o
                 config                           300000   300000        E        0       4
                 init                                  E        E        4        4       0
                 reset_vec                             0        0        4        0       0
@@ -230,6 +230,11 @@ Relay_initialize@F3480                   bssCOMRAM    000057
 Relay_off@F3490                          bssCOMRAM    000055
 Relay_on@F3485                           bssCOMRAM    000056
 _Application_initialize                  text6        0019F8
+_EEADR                                   (abs)        000FA9
+_EEADRH                                  (abs)        000FAA
+_EECON1bits                              (abs)        000FA6
+_EECON2                                  (abs)        000FA7
+_EEDATA                                  (abs)        000FA8
 _High                                    text14       0019EC
 _INT0_ISR                                text19       001A06
 _INT0_Interrupt_Handler                  bssCOMRAM    000053
